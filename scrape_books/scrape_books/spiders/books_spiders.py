@@ -8,13 +8,13 @@ class BookScrapy(scrapy.Spider):
     ]
 
     def parse(self, response):
-        for book in response.css("product_pod"):
+        for book in response.css("article.product_pod"):
             yield {
-                "title": book.css("div.col-sm-6.product_main::text").get(),
+                "title": book.css("h3 a::attr(title)").get(),
                 "price": book.css("p.price_color::text").get(),
-                "amount_in_stock": book.css("p.instock.availability::text").get(),
+                "amount_in_stock": book.css("p.instock.availability::text").get().strip(),
                 "rating": book.css("p.star-rating::attr(class)").get().split()[-1],
-                "category": book.css("li:nth-child(3)::text").get(),
+                "category": book.css(".breadcrumb::text").get(),
                 "description": book.css("#product_description + p::text").get(),
-                "upc": book.css("#content_inner + tr::text").get(),
+                "upc": book.css("table.table.table-striped tr:nth-child(1) td::text").get(),
             }
